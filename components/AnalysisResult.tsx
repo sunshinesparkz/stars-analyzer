@@ -67,7 +67,7 @@ const AnalysisResult: React.FC<AnalysisResultProps> = ({ data, onReset }) => {
                     dataKey="value"
                     stroke="none"
                   >
-                    {similarityData.map((entry, index) => (
+                    {similarityData.map((_, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
