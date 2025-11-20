@@ -1,8 +1,7 @@
 import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { PlanetAnalysis } from "../types";
 
-// Vite uses import.meta.env for environment variables
-// and requires VITE_ prefix for client-side exposed variables
+// ใช้ import.meta.env สำหรับ Vite (ต้องมี prefix VITE_)
 const apiKey = import.meta.env.VITE_API_KEY;
 const ai = new GoogleGenAI({ apiKey: apiKey || "" });
 
@@ -23,7 +22,7 @@ export const fileToGenerativePart = async (file: File): Promise<string> => {
 
 export const analyzePlanetImage = async (base64Image: string, mimeType: string): Promise<PlanetAnalysis> => {
   if (!apiKey) {
-    throw new Error("ไม่พบ API Key กรุณาตรวจสอบการตั้งค่า (VITE_API_KEY)");
+    throw new Error("ไม่พบ API Key กรุณาตรวจสอบการตั้งค่า Environment Variable: VITE_API_KEY");
   }
 
   const schema: Schema = {
@@ -69,6 +68,6 @@ export const analyzePlanetImage = async (base64Image: string, mimeType: string):
     return JSON.parse(text) as PlanetAnalysis;
   } catch (error) {
     console.error("Gemini Analysis Error:", error);
-    throw new Error("เกิดข้อผิดพลาดในการวิเคราะห์ภาพ");
+    throw new Error("เกิดข้อผิดพลาดในการวิเคราะห์ภาพ: กรุณาตรวจสอบ API Key หรือลองใหม่อีกครั้ง");
   }
 };
