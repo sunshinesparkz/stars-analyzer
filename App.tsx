@@ -3,6 +3,7 @@ import { Rocket, AlertCircle } from 'lucide-react';
 import ImageUploader from './components/ImageUploader';
 import AnalysisResult from './components/AnalysisResult';
 import { analyzePlanetImage, fileToGenerativePart } from './services/geminiService';
+import { saveAnalysisToSupabase } from './services/dbService';
 import { AnalysisState } from './types';
 
 const App: React.FC = () => {
@@ -26,9 +27,16 @@ const App: React.FC = () => {
     }));
 
     try {
+      // 1. Analyze with Gemini AI
       const base64Data = await fileToGenerativePart(file);
       const result = await analyzePlanetImage(base64Data, file.type);
       
+      // 2. Save to Supabase (Fire and forget - or await if you want to ensure save)
+      // We don't want to block the UI if the DB save fails, so we just log errors inside the service
+      saveAnalysisToSupabase(result).catch(err => {
+        console.error("Background Save Failed:", err);
+      });
+
       setState(prev => ({ 
         ...prev, 
         isLoading: false, 
